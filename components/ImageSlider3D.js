@@ -119,28 +119,6 @@ export default function ImageSlider3D({
       }}
       className={containerClassName}
     >
-      {/* Shimmer skeleton shown while images are preloading */}
-      {!imagesLoaded && (
-        <div style={{
-          position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px', zIndex: 5
-        }}>
-          {[...Array(Math.min(images.length, 5))].map((_, i) => (
-            <div key={i} style={{
-              width: '9em', aspectRatio: cardAspectRatio,
-              borderRadius: '1.5em',
-              background: 'linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.05) 75%)',
-              backgroundSize: '200% 100%',
-              animation: 'shimmer 1.4s infinite',
-              opacity: 0.6 - i * 0.1
-            }} />
-          ))}
-          <style dangerouslySetInnerHTML={{ __html: `
-            @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-          `}} />
-        </div>
-      )}
-      {/* Main carousel — fades in once all images are decoded */}
-      <div style={{ width: '100%', height: '100%', opacity: imagesLoaded ? 1 : 0, transition: 'opacity 0.4s ease', display: 'grid', placeItems: 'center' }}>
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes carousel-rotate-left {
           from { transform: rotateY(0deg); }
@@ -263,14 +241,12 @@ export default function ImageSlider3D({
                 alt={`Slide ${i}`}
                 className={imageClassName}
                 style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit", pointerEvents: "none" }}
-                loading="eager"
-                decoding="async"
+                loading="lazy"
               />
             </div>
           );
         })}
         </div>
-      </div>
       </div>
 
       {/* --- DOT NAVIGATION --- */}
