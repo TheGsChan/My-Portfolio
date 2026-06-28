@@ -1,12 +1,19 @@
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 const BUCKET_NAME = 'motion projects';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
-
 export default async function handler(req, res) {
+  // Create client inside handler so env vars are guaranteed to be loaded
+  const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+  if (!SUPABASE_URL || !SUPABASE_SERVICE_KEY) {
+    console.error('Missing Supabase env vars:', { SUPABASE_URL: !!SUPABASE_URL, SUPABASE_SERVICE_KEY: !!SUPABASE_SERVICE_KEY });
+    return res.status(500).json({ error: 'Supabase env vars not configured' });
+  }
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+
   try {
     const folders = ['motion ui', 'GRAPHICS WORK', 'TYPOGRAPHY', 'hobbies'];
     const results = {};
@@ -48,6 +55,6 @@ export default async function handler(req, res) {
     res.status(200).json(results);
   } catch (err) {
     console.error('API Error:', err);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ error: 'Internal Server Error', message: err.message });
   }
 }
