@@ -1,0 +1,139 @@
+/* ── LogoLoop ─────────────────────────────────────────────────── */
+
+.logoloop {
+  --logoloop-gap: 32px;
+  --logoloop-logoHeight: 28px;
+  --logoloop-fadeColor: #ffffff;
+
+  position: relative;
+  overflow: hidden;
+  display: flex;
+}
+
+/* ── HORIZONTAL ─────────────────────────────────────────────── */
+.logoloop--horizontal {
+  flex-direction: row;
+  width: 100%;
+  height: calc(var(--logoloop-logoHeight) * 2.5);
+  align-items: center;
+}
+
+.logoloop--horizontal .logoloop__track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  will-change: transform;
+}
+
+.logoloop--horizontal .logoloop__list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--logoloop-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* ── VERTICAL ──────────────────────────────────────────────── */
+.logoloop--vertical {
+  flex-direction: column;
+}
+
+.logoloop--vertical .logoloop__track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+
+.logoloop--vertical .logoloop__list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--logoloop-gap);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── ITEMS ─────────────────────────────────────────────────── */
+.logoloop__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.logoloop__item img {
+  height: var(--logoloop-logoHeight);
+  width: auto;
+  object-fit: contain;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.logoloop__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  outline: none;
+}
+
+.logoloop__node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── FADE EDGES ────────────────────────────────────────────── */
+.logoloop--fade.logoloop--horizontal::before,
+.logoloop--fade.logoloop--horizontal::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  z-index: 2;
+  pointer-events: none;
+}
+.logoloop--fade.logoloop--horizontal::before {
+  left: 0;
+  background: linear-gradient(to right, var(--logoloop-fadeColor) 0%, transparent 100%);
+}
+.logoloop--fade.logoloop--horizontal::after {
+  right: 0;
+  background: linear-gradient(to left, var(--logoloop-fadeColor) 0%, transparent 100%);
+}
+
+.logoloop--fade.logoloop--vertical::before,
+.logoloop--fade.logoloop--vertical::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 2;
+  pointer-events: none;
+}
+.logoloop--fade.logoloop--vertical::before {
+  top: 0;
+  background: linear-gradient(to bottom, var(--logoloop-fadeColor) 0%, transparent 100%);
+}
+.logoloop--fade.logoloop--vertical::after {
+  bottom: 0;
+  background: linear-gradient(to top, var(--logoloop-fadeColor) 0%, transparent 100%);
+}
+
+/* ── SCALE ON HOVER ────────────────────────────────────────── */
+.logoloop--scale-hover .logoloop__item {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+              filter 0.3s ease;
+}
+.logoloop--scale-hover .logoloop__item:hover {
+  transform: scale(1.2) translateY(-4px);
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.2));
+  z-index: 1;
+}

@@ -1,0 +1,9 @@
+name: smooth-loader
+
+services:
+    app:
+        image: smooth-loader
+        container_name: smooth-loader
+        build: .
+        volumes:
+            - .:/app:z
