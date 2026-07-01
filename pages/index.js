@@ -12,6 +12,7 @@ const ScrollVelocity = dynamic(() => import('../components/ScrollVelocity'), { s
 const RollingText = dynamic(() => import('../components/RollingText'), { ssr: false })
 const ImageSlider3D = dynamic(() => import('../components/ImageSlider3D'), { ssr: false })
 const SeamlessVideoLoop = dynamic(() => import('../components/SeamlessVideoLoop'), { ssr: false })
+const MobileLayout = dynamic(() => import('../components/MobileLayout'), { ssr: false })
 import { DualTypingAnimation } from '../components/DualTypingAnimation';
 // ── Typewriter CSS reveal: no text/style changes, just animation on parent class ──
 
@@ -24,6 +25,15 @@ const Clippathgroup = (props) => {
     'TYPOGRAPHY': [],
     'hobbies': []
   });
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   useEffect(() => {
     fetch('/api/projects')
@@ -31,6 +41,9 @@ const Clippathgroup = (props) => {
       .then(data => setSupabaseMedia(data))
       .catch(err => console.error('Error fetching Supabase media:', err));
   }, []);
+
+  // ── MOBILE: render dedicated mobile layout ──
+  if (isMobile) return <MobileLayout supabaseMedia={supabaseMedia} />;
 
   // IntersectionObserver for Work Experience sections
   const exp1Ref = useRef(null);
