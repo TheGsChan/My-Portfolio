@@ -12,7 +12,6 @@ const ScrollVelocity = dynamic(() => import('../components/ScrollVelocity'), { s
 const RollingText = dynamic(() => import('../components/RollingText'), { ssr: false })
 const ImageSlider3D = dynamic(() => import('../components/ImageSlider3D'), { ssr: false })
 const SeamlessVideoLoop = dynamic(() => import('../components/SeamlessVideoLoop'), { ssr: false })
-const MobileLayout = dynamic(() => import('../components/MobileLayout'), { ssr: false })
 import { DualTypingAnimation } from '../components/DualTypingAnimation';
 // ── Typewriter CSS reveal: no text/style changes, just animation on parent class ──
 
@@ -25,15 +24,6 @@ const Clippathgroup = (props) => {
     'TYPOGRAPHY': [],
     'hobbies': []
   });
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Mobile detection
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
 
   useEffect(() => {
     fetch('/api/projects')
@@ -163,9 +153,6 @@ const Clippathgroup = (props) => {
     if (!video) return;
     video.currentTime = TRIM_IN;
   };
-
-  // ── MOBILE: all hooks have run — now safe to branch ──
-  if (isMobile) return <MobileLayout supabaseMedia={supabaseMedia} />;
 
   return (
     <ScaleWrapper designWidth={3537.33} designHeight={17870}>
