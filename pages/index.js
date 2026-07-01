@@ -42,8 +42,7 @@ const Clippathgroup = (props) => {
       .catch(err => console.error('Error fetching Supabase media:', err));
   }, []);
 
-  // ── MOBILE: render dedicated mobile layout ──
-  if (isMobile) return <MobileLayout supabaseMedia={supabaseMedia} />;
+
 
   // IntersectionObserver for Work Experience sections
   const exp1Ref = useRef(null);
@@ -164,6 +163,9 @@ const Clippathgroup = (props) => {
     if (!video) return;
     video.currentTime = TRIM_IN;
   };
+
+  // ── MOBILE: all hooks have run — now safe to branch ──
+  if (isMobile) return <MobileLayout supabaseMedia={supabaseMedia} />;
 
   return (
     <ScaleWrapper designWidth={3537.33} designHeight={17870}>

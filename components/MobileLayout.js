@@ -1,12 +1,11 @@
-'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { DualTypingAnimation } from './DualTypingAnimation';
 
 const ImageSlider3D = dynamic(() => import('./ImageSlider3D'), { ssr: false });
 const LogoLoop = dynamic(() => import('./LogoLoop'), { ssr: false });
 const ScrollVelocity = dynamic(() => import('./ScrollVelocity'), { ssr: false });
 const Particles = dynamic(() => import('./ui/particles').then(m => ({ default: m.Particles })), { ssr: false });
+const DualTypingAnimation = dynamic(() => import('./DualTypingAnimation').then(m => ({ default: m.DualTypingAnimation })), { ssr: false });
 
 export default function MobileLayout({ supabaseMedia = {} }) {
   const [visibleSections, setVisibleSections] = useState({});
@@ -355,7 +354,7 @@ export default function MobileLayout({ supabaseMedia = {} }) {
       ══════════════════════════════════════════ */}
       <div style={{ overflow: 'hidden', padding: '8px 0', margin: '12px 0' }}>
         <ScrollVelocity
-          texts={[<><span style={{ color: '#f5d000', marginRight: '14px' }}>CRIME SCENE :</span><span style={{ letterSpacing: '8px' }}>WORK IN PROGRESS</span></>]}
+          texts={['CRIME SCENE : WORK IN PROGRESS ◆ CRIME SCENE : WORK IN PROGRESS ◆']}
           velocity={60}
           className="crime-text"
           parallaxClassName="crime-parallax"
