@@ -1,18 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 
-export default function MobilePage() {
-  const [projects, setProjects] = useState({ 'motion ui': [], 'GRAPHICS WORK': [], 'TYPOGRAPHY': [], 'hobbies': [] });
+export default function MobilePage({ projects = {} }) {
   const [visible, setVisible] = useState({});
   const refs = useRef({});
-
-  // Fetch Supabase projects
-  useEffect(() => {
-    fetch('/api/projects')
-      .then(r => r.json())
-      .then(d => setProjects(d))
-      .catch(() => {});
-  }, []);
 
   // Section fade-in observer
   useEffect(() => {
@@ -381,10 +372,48 @@ function GallerySection({ refFn, id, label, title, titleItalic, subtext, images,
           return isVid ? (
             <video key={i} src={src} muted loop playsInline className="m-gallery-img" style={{ width:'60vw', maxWidth:'240px', aspectRatio:'7/10', objectFit:'cover', borderRadius:'16px', border:'1px solid rgba(255,255,255,0.1)', background:'#111' }} />
           ) : (
-            <img key={i} src={src} alt={`${title} ${i+1}`} className="m-gallery-img" loading="lazy" />
+            <img key={i} src={src} alt={`${title} ${i+1}`} className="m-gallery-img" loading="eager" decoding="async" />
           );
         })}
       </div>
     </div>
   );
+}
+
+// ── Server-side: fetch Supabase data BEFORE page is sent to browser ──
+export async function getServerSideProps() {
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY
+    );
+
+    const BUCKET = 'motion projects';
+    const folders = ['motion ui', 'GRAPHICS WORK', 'TYPOGRAPHY', 'hobbies'];
+    const results = {};
+
+    await Promise.all(folders.map(async (folder) => {
+      const { data, error } = await supabase.storage.from(BUCKET).list(folder);
+      if (error || !data) { results[folder] = []; return; }
+
+      const urls = await Promise.all(
+        data
+          .filter(f => f.name && !f.name.startsWith('.emptyFolderPlaceholder'))
+          .map(async (f) => {
+            const { data: signed } = await supabase.storage
+              .from(BUCKET)
+              .createSignedUrl(`${folder}/${f.name}`, 3600);
+            return signed?.signedUrl || null;
+          })
+      );
+      results[folder] = urls.filter(Boolean);
+    }));
+
+    return { props: { projects: results } };
+  } catch (err) {
+    console.error('getServerSideProps error:', err);
+    // Return empty — fallback images will show instead
+    return { props: { projects: { 'motion ui': [], 'GRAPHICS WORK': [], 'TYPOGRAPHY': [], 'hobbies': [] } } };
+  }
 }
